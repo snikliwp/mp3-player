@@ -7,7 +7,9 @@
 	import flash.media.SoundLoaderContext;
 	import flash.media.SoundTransform;
 	
+	import flash.media.Camera;
 	
+	import flash.net.URLRequest;
 	
 	import flash.events.MouseEvent;
 	import flash.events.ProgressEvent;
@@ -28,38 +30,20 @@
 		private var context:SoundLoaderContext = new SoundLoaderContext(4000);
 		private var timmy:Timer = new Timer(100, 0);
 		private var vol:Number = 0.4;
-		private var playListXML:String = "playlist.xml";					// name of the xml file
-		private var listXML:XML;									// array to store the xml data
-		private	var req:URLRequest = new URLRequest();					// Set up to get the xml data 
-		private	var xmlLoader:URLLoader = new URLLoader();				// Set up to get the images
-			
+		
 		
 		public static const CLICK:String = "click";
 		
 		
 		public function DanceDoc() {
-			trace('in function xmlError: ');
 			// constructor code
 			//event listeners for the buttons
-			
-			xmlLoader = new URLLoader();										// Set up to get the images
-			xmlLoader.addEventListener(Event.COMPLETE, getData);				// Event Listener for successful Completion
-			xmlLoader.addEventListener(IOErrorEvent.IO_ERROR, xmlError);		// Event Listener for some Sort of IO Error
-			xmlLoader.addEventListener(HTTPStatusEvent.HTTP_STATUS, error404);	// Event Listener for a specific IO error - file not found
-			xmlLoader.load(req);												// go get the XML file
-			
 			play_btn.addEventListener(CLICK, playClick); 
 			pause_btn.addEventListener(CLICK, pauseClick); 
 			stop_btn.addEventListener(MouseEvent.CLICK, stopClick); 
 			next_btn.addEventListener(MouseEvent.CLICK, nextClick); 
 			prev_btn.addEventListener(MouseEvent.CLICK, prevClick); 
 			
-			volume_mc.addEventListener(MouseEvent.CLICK, setNewVolume);
-			volume_mc.addEventListener(MouseEvent.MOUSE_DOWN, startVolumeTracking);
-			volume_mc.addEventListener(MouseEvent.MOUSE_UP, stopVolumeTracking);
-			volume_mc.mask_mc.scaleX = vol;
-			
-
 			timmy.addEventListener(TimerEvent.TIMER, updateInterface);
 			seek_mc.load_fill_mc.scaleX = 0;
 			seek_mc.play_fill_mc.scaleX = 0;
@@ -78,7 +62,6 @@
 		
 		
 		public function jumpTo(ev:MouseEvent):void{
-			trace('in function xmlError: ');
 			//move to a new point on the song's timeline and start playing from there
 			//if( isPlaying ){
 				//pause the song
@@ -100,7 +83,6 @@
 		}
 		
 		public function playClick(ev:MouseEvent):void{
-			trace('in function xmlError: ');
 			//play the song
 			if(!isPlaying){
 				isPlaying = true;
@@ -119,14 +101,12 @@
 		}
 		
 		public function songDone(ev:Event):void{
-			trace('in function xmlError: ');
 			//move to the next song
 			next_btn.dispatchEvent( new MouseEvent("click") );		
 			// stopSongCommon();
 		}
 		
 		public function songLoading(ev:ProgressEvent):void{
-			trace('in function xmlError: ');
 			//get the percentage and move the scaleX of the seek_mc.load_fill_mc a percentage of seek_mc.bg_mc.width
 			var pct:Number = ev.bytesLoaded / ev.bytesTotal;
 			if( pct < .98){
@@ -141,7 +121,6 @@
 		}
 		
 		public function updateInterface(ev:TimerEvent):void{
-			trace('in function xmlError: ');
 			if( isPlaying ){
 				//update the seek bar
 				//use the sc.position and (s.length OR the time from the XML) to calculate the percentage played
@@ -191,7 +170,6 @@
 		}
 		
 		public function pauseClick(ev:MouseEvent):void{
-			trace('in function xmlError: ');
 			if(isPlaying){
 				position = sc.position;
 				stopSongCommon();
@@ -199,7 +177,6 @@
 		}
 		
 		public function prevClick(ev:MouseEvent):void{
-			trace('in function xmlError: ');
 			stop_btn.dispatchEvent(new MouseEvent("click"));
 			currentTrack--;
 			if(currentTrack < 0){
@@ -209,7 +186,6 @@
 		}
 		
 		public function nextClick(ev:MouseEvent):void{
-			trace('in function xmlError: ');
 			stop_btn.dispatchEvent(new MouseEvent("click"));
 			currentTrack++;
 			if(currentTrack >= songList.length){
@@ -220,7 +196,6 @@
 		}
 		
 		public function stopClick(ev:MouseEvent):void{
-			trace('in function xmlError: ');
 			if(isPlaying){
 				position = 0;
 				stopSongCommon();
@@ -231,7 +206,6 @@
 		}
 		
 		public function stopSongCommon():void{
-			trace('in function xmlError: ');
 			isPlaying = false;
 			play_btn.visible = true;
 			pause_btn.visible = false;
@@ -240,53 +214,6 @@
 			sc.removeEventListener(Event.SOUND_COMPLETE, songDone);
 		}
 		
-		public function setNewVolume(ev:MouseEvent):void{
-			trace('in function xmlError: ');
-			//calculate the new volume percentage
-			//create a new SoundTransform
-			//pass it to the SoundChannel
-			vol = ev.localX / volume_mc.width;
-			//ev.localX tells me the distance in the X direction from the volume_mc registration point
-			var st:SoundTransform = new SoundTransform(vol, 0);
-			sc.soundTransform = st;
-			//set the mask to match the new volume
-			volume_mc.mask_mc.scaleX = vol;
-		}
-
-		public function startVolumeTracking(ev:MouseEvent):void{
-			trace('in function xmlError: ');
-			volume_mc.addEventListener(MouseEvent.MOUSE_MOVE, setNewVolume);
-		}
-		public function stopVolumeTracking(ev:MouseEvent):void{
-			trace('in function xmlError: ');
-			volume_mc.removeEventListener(MouseEvent.MOUSE_MOVE, setNewVolume);
-		}
-		
-		
-		public function getData(ev):void{
-			trace('in function xmlError: ');
-			quizXML = XML(ev.target.data);			// load the array with the data from the XML file
-			numTitle = quizXML.quiztitle.length();	// number of level1 tags in the XML file
-			numQuestion = quizXML.question.length();	// number of level1 tags in the XML file
-
-
-		}
-		
-		public function xmlError(ev:MouseEvent):void{
-			trace('in function xmlError: ');
-		}
-		
-		public function error404(ev:MouseEvent):void{
-			trace('in function xmlError: ');
-		}
-		
-		public function playlist(ev:MouseEvent): void {
-			trace('in function xmlError: ');
-			// make the playlist visible expanding from the top
-			
-			// the xml is loaded in 
-			
-		}// end function playlist
 	}
 	
 }
