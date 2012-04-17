@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<playlist>
+	<song>
+		<artist>Bowling For Soup</artist>
+		<title>The Bitch Song</title>
+		<file>the-bitch-song.mp3</file>
+		<album>Let's Do It for Johnny!</album>
+		<length>03:23</length>
+	</song>
+	<song>
+		<artist>Bowling For Soup</artist>
+		<title>S-S-S-Saturday</title>
+		<file>s-s-s-saturday.mp3</file>
+		<album>Fishin' for Woos</album>
+		<length>03:05</length>
+	</song>
+	<song>
+		<artist>Bowling For Soup</artist>
+		<title>Turbulence</title>
+		<file>turbulence.mp3</file>
+		<album>Fishin' for Woos</album>
+		<length>03:58</length>
+	</song>
+	<song>
+		<artist>Bowling For Soup</artist>
+		<title>High School Never Ends</title>
+		<file>high-school-never-ends.mp3</file>
+		<album>The Great Burrito Extortion Case</album>
+		<length>03:29</length>
+	</song>
+	<song>
+		<artist>Bowling For Soup</artist>
+		<title>1985</title>
+		<file>1985.mp3</file>
+		<album>A Hangover You Don't Deserve</album>
+		<length>03:13</length>
+	</song>
+	<song>
+		<artist>Bowling For Soup</artist>
+		<title>Friends Chicks Guitars</title>
+		<file>friends-chicks-guitars.mp3</file>
+		<album>Fishin' for Woos</album>
+		<length>03:42</length>
+	</song>
+	<song>
+		<artist>Bowling For Soup</artist>
+		<title>Girl All the Bad Guys Want</title>
+		<file>girl-all-the-bad-guys-want.mp3</file>
+		<album>A Hangover You Don't Deserve</album>
+		<length>03:17</length>
+	</song>
+</playlist>
