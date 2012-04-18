@@ -317,11 +317,13 @@ public function playerDoc() {
 			var d:listEntry;
 			for (var i:Number = 0; i <= numSong - 1; i++) {
 				d = new listEntry;
-				d.lineItem_txt.text = listXML.song[i].title;
+				d.listItem_txt.text = listXML.song[i].title;
+			trace('d.listItem_txt.text: ', d.listItem_txt.text);
 				d.x = 0;
 				d.y = ypos + 15;
-				c.addChild(d);
-			}
+			c.addChild(d);
+			trace('c: ', c);
+			} // end for loop
 
 			
 			// the xml is loaded in 
