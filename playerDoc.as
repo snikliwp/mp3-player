@@ -19,12 +19,14 @@
 	import flash.utils.Timer;
 	
 	import flash.display.LoaderInfo;
+	import flash.display.Graphics;
 	
 	import flash.net.URLRequest;		// Go get the xml file
 	import flash.net.URLLoader;			// Load the xml file
 	
 	import flash.text.TextField;
 	import flash.text.TextFormat;
+	import flash.geom.Rectangle;
 
 
 
@@ -70,7 +72,7 @@ public function playerDoc() {
 			xmlLoader.addEventListener(HTTPStatusEvent.HTTP_STATUS, error404);	// Event Listener for a specific IO error - file not found
 			xmlLoader.load(req);												// go get the XML file
 
-			playlist_button.addEventListener(CLICK, playList); 
+			playlist_button.addEventListener(MouseEvent.ROLL_OVER, playList); 
 			play_button.addEventListener(CLICK, playClick); 
 			pause_button.addEventListener(CLICK, pauseClick); 
 			stop_button.addEventListener(MouseEvent.CLICK, stopClick); 
@@ -78,10 +80,10 @@ public function playerDoc() {
 			previous_button.addEventListener(MouseEvent.CLICK, prevClick); 
 //			previous_button.addEventListener(MouseEvent.CLICK, prevClick); 
 
-			volume_mc.addEventListener(MouseEvent.CLICK, setNewVolume);
-			volume_mc.addEventListener(MouseEvent.MOUSE_DOWN, startVolumeTracking);
-			volume_mc.addEventListener(MouseEvent.MOUSE_UP, stopVolumeTracking);
-			volume_mc.mask_mc.scaleX = vol;
+			volumeControl_mc.addEventListener(MouseEvent.CLICK, setNewVolume);
+			volumeControl_mc.addEventListener(MouseEvent.MOUSE_DOWN, startVolumeTracking);
+			volumeControl_mc.addEventListener(MouseEvent.MOUSE_UP, stopVolumeTracking);
+			volumeControl_mc.volumeControlMask.scaleX = vol;
 
 			timmy.addEventListener(TimerEvent.TIMER, updateInterface);
 			seek_mc.load_fill_mc.scaleX = 0;
@@ -94,12 +96,12 @@ public function playerDoc() {
 			glowB.color = 0x0000ff;
 			glowR.color = 0xff0000;
 //			glow.strength = 128;
-			stop_button.filters = [glowB]
-			previous_button.filters = [glowB]
-			next_button.filters = [glowB]
-			pause_button.filters = [glowB]
-			play_button.filters = [glowB]
-			playlist_button.filters = [glowB]
+			stop_button.filters = [glowB];
+			previous_button.filters = [glowB];
+			next_button.filters = [glowB];
+			pause_button.filters = [glowB];
+			play_button.filters = [glowB];
+			playlist_button.filters = [glowB];
 			
 			
 		}// end function playerDoc
@@ -277,7 +279,7 @@ public function playerDoc() {
 			//calculate the new volume percentage
 			//create a new SoundTransform
 			//pass it to the SoundChannel
-			vol = ev.localX / volume_mc.width;
+			vol = ev.localX / volumeControl_mc.width;
 			//ev.localX tells me the distance in the X direction from the volume_mc registration point
 			var st:SoundTransform = new SoundTransform(vol, 0);
 			sc.soundTransform = st;
@@ -294,6 +296,16 @@ public function playerDoc() {
 			trace('in function stopVolumeTracking: ');
 			volumeControl_mc.removeEventListener(MouseEvent.MOUSE_MOVE, setNewVolume);
 		}// end function stopVolumeTracking
+		
+		public function clearList(ev:MouseEvent):void{
+			trace('in function clearList: ');
+			trace('ev.target: ', ev.target);
+			trace('ev.target.parent: ', ev.target.parent);
+			ev.target.removeEventListener(MouseEvent.ROLL_OUT, clearList);
+			ev.target.parent.removeChild(ev.target);
+			
+//			volumeControl_mc.removeEventListener(MouseEvent.MOUSE_MOVE, setNewVolume);
+		}// end function clearList
 		
 		public function getData(ev):void{
 			trace('in function getData: ');
@@ -328,36 +340,62 @@ public function playerDoc() {
 		public function playList(ev:MouseEvent): void {
 			trace('in function playlist: ');
 			// make the playlist visible expanding from the top
-			var c:playListHolder = new playListHolder;
+			var c:playListHolder = new playListHolder();
 			c.x = 0;
-			c.y = 420;
-			this.addChild(c);
+			c.y = 75;
 			
+			this.addChild(c);
+			c.addEventListener(MouseEvent.CLICK, changeSong);
+			c.addEventListener(MouseEvent.ROLL_OUT, clearList);
 			var ltf:TextFormat = new TextFormat(); // format for the list item
-			var ypos:Number = -15;
+			var ypos:Number = -10;
 			var d:listEntry;
 			for (var i:Number = 0; i <= numSong - 1; i++) {
-				d = new listEntry;
+				d = new listEntry();
 				d.listItemNum_txt.text = String(i + 1);
 				d.listItemTitle_txt.text = listXML.song[i].title;
 				d.listItemLength_txt.text =listXML.song[i].length;
-				d.x = 0;
+				d.x = 5;
 				d.y = ypos + 15;
 				ypos = d.y;
+				if (i == currentTrack) {
+					ltf.color = 0x00ff00;
+				} else { //end if
+					ltf.color = 0x0000ff;
+				} //end else
 				d.height = 15;
+				d.width = 295;
 				ltf.size = 15;
 				d.listItemNum_txt.setTextFormat(ltf);
 				d.listItemTitle_txt.setTextFormat(ltf);
 				d.listItemLength_txt.setTextFormat(ltf);
-			c.addChild(d);
-			trace('c: ', c);
+				d.listItemLength_txt.selectable = false;
+				d.currentTrack = i; // add the track number of this selection to the clip so we can get at it later on
+				d.buttonMode = true;
+				d.useHandCursor = true;
+				d.mouseChildren = false;
+				c.addChild(d);
+				c.height = 15 * int(numSong);
 			} // end for loop
-
-			
-			// the xml is loaded in 
-			
+				// draw a nice border around the list holder
+				c.graphics.clear();
+				var r:Rectangle = c.getBounds(c);
+				c.graphics.lineStyle(5.0, 0x000000, 1);
+				c.graphics.moveTo(r.x, r.y);
+				c.graphics.lineTo(r.x + r.width, r.y);
+				c.graphics.lineTo(r.x + r.width, r.y + r.height);
+				c.graphics.lineTo(r.x, r.y + r.height);
+				c.graphics.lineTo(r.x, r.y);
+				
 		}// end function playlist
 		
+		public function changeSong(ev:MouseEvent): void {
+			trace('In function changeSong: ', ev.target);
+			ev.target.removeEventListener(MouseEvent.CLICK, changeSong);
+			currentTrack = ev.target.currentTrack -1;
+			next_button.dispatchEvent(new MouseEvent("click"));
+			clearList(ev);
+		} // end function changeSong
 		
 		
 		
