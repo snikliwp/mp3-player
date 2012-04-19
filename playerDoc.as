@@ -1,7 +1,9 @@
 ﻿package  {
 	
 	import flash.display.MovieClip;
-
+	
+	import flash.filters.*
+	
 	import flash.media.Sound;
 	import flash.media.SoundChannel;
 	import flash.media.SoundLoaderContext;
@@ -43,7 +45,9 @@
 		private var context:SoundLoaderContext = new SoundLoaderContext(4000);
 		private var timmy:Timer = new Timer(100, 0);
 		private var vol:Number = 0.4;
-		
+		private var titleFormat:TextFormat = new TextFormat();
+		private var glowR:GlowFilter = new GlowFilter;
+		private var glowB:GlowFilter = new GlowFilter;
 		private var playList_mc:MovieClip;								// new playlist
 		private var listEntry_mc:MovieClip;								// new playlist
 		private var playListXML:String = "playlist.xml";			// name of the xml file
@@ -66,13 +70,13 @@ public function playerDoc() {
 			xmlLoader.addEventListener(HTTPStatusEvent.HTTP_STATUS, error404);	// Event Listener for a specific IO error - file not found
 			xmlLoader.load(req);												// go get the XML file
 
-			playlist_btn.addEventListener(CLICK, playList); 
-			play_btn.addEventListener(CLICK, playClick); 
-			pause_btn.addEventListener(CLICK, pauseClick); 
-			stop_btn.addEventListener(MouseEvent.CLICK, stopClick); 
-			next_btn.addEventListener(MouseEvent.CLICK, nextClick); 
-			prev_btn.addEventListener(MouseEvent.CLICK, prevClick); 
-			prev_btn.addEventListener(MouseEvent.CLICK, prevClick); 
+			playlist_button.addEventListener(CLICK, playList); 
+			play_button.addEventListener(CLICK, playClick); 
+			pause_button.addEventListener(CLICK, pauseClick); 
+			stop_button.addEventListener(MouseEvent.CLICK, stopClick); 
+			next_button.addEventListener(MouseEvent.CLICK, nextClick); 
+			previous_button.addEventListener(MouseEvent.CLICK, prevClick); 
+//			previous_button.addEventListener(MouseEvent.CLICK, prevClick); 
 
 			volume_mc.addEventListener(MouseEvent.CLICK, setNewVolume);
 			volume_mc.addEventListener(MouseEvent.MOUSE_DOWN, startVolumeTracking);
@@ -86,6 +90,18 @@ public function playerDoc() {
 
 			seek_mc.hit_mc.addEventListener(MouseEvent.CLICK, jumpTo);
 			
+//			glow.inner = false;
+			glowB.color = 0x0000ff;
+			glowR.color = 0xff0000;
+//			glow.strength = 128;
+			stop_button.filters = [glowB]
+			previous_button.filters = [glowB]
+			next_button.filters = [glowB]
+			pause_button.filters = [glowB]
+			play_button.filters = [glowB]
+			playlist_button.filters = [glowB]
+			
+			
 		}// end function playerDoc
 		
 		
@@ -94,14 +110,14 @@ public function playerDoc() {
 			//move to a new point on the song's timeline and start playing from there
 			//if( isPlaying ){
 				//pause the song
-				pause_btn.dispatchEvent( new MouseEvent("click") );		//this will have set the position variable that we need to overwrite
+				pause_button.dispatchEvent( new MouseEvent("click") );		//this will have set the position variable that we need to overwrite
 				
 				var pct:Number = ev.localX / ev.currentTarget.width;
 				//we will switch this to use the XML value instead of the s.length
 				position = pct * s.length;
 				
 				//play from the new position
-				play_btn.dispatchEvent( new MouseEvent("click") );		
+				play_button.dispatchEvent( new MouseEvent("click") );		
 			/*}else{
 				var pct:Number = ev.localX / ev.currentTarget.width;
 				//we will switch this to use the XML value instead of the s.length
@@ -116,8 +132,10 @@ public function playerDoc() {
 			//play the song
 			if(!isPlaying){
 				isPlaying = true;
-				play_btn.visible = false;
-				pause_btn.visible = true;
+				play_button.filters = [glowR];
+//				play_button.visible = false;
+				pause_button.filters = [glowB];
+//				pause_button.visible = true;
 				var req:URLRequest = new URLRequest(path + songListXML[currentTrack]);
 				var trans:SoundTransform = new SoundTransform(vol, 0);
 				s = new Sound(req, context);
@@ -133,7 +151,7 @@ public function playerDoc() {
 		public function songDone(ev:Event):void{
 			trace('in function songDone: ');
 			//move to the next song
-			next_btn.dispatchEvent( new MouseEvent("click") );		
+			next_button.dispatchEvent( new MouseEvent("click") );		
 			// stopSongCommon();
 		}// end function songDone
 		
@@ -153,7 +171,7 @@ public function playerDoc() {
 		}// end function songLoading
 		
 		public function updateInterface(ev:TimerEvent):void{
-			trace('in function updateInterface: ');
+//			trace('in function updateInterface: ');
 			if( isPlaying ){
 				//update the seek bar
 				//use the sc.position and (s.length OR the time from the XML) to calculate the percentage played
@@ -212,22 +230,22 @@ public function playerDoc() {
 		
 		public function prevClick(ev:MouseEvent):void{
 			trace('in function prevClick: ');
-			stop_btn.dispatchEvent(new MouseEvent("click"));
+			stop_button.dispatchEvent(new MouseEvent("click"));
 			currentTrack--;
 			if(currentTrack < 0){
 				currentTrack = songListXML.length - 1;
 			}
-			play_btn.dispatchEvent(new MouseEvent("click"));
+			play_button.dispatchEvent(new MouseEvent("click"));
 		}// end function prevClick
 		
 		public function nextClick(ev:MouseEvent):void{
 			trace('in function nextClick: ');
-			stop_btn.dispatchEvent(new MouseEvent("click"));
+			stop_button.dispatchEvent(new MouseEvent("click"));
 			currentTrack++;
 			if(currentTrack >= songListXML.length){
 				currentTrack = 0;
 			}
-			play_btn.dispatchEvent(new MouseEvent("click"));
+			play_button.dispatchEvent(new MouseEvent("click"));
 
 		}// end function nextClick
 		
@@ -245,8 +263,10 @@ public function playerDoc() {
 		public function stopSongCommon():void{
 			trace('in function stopSongCommon: ');
 			isPlaying = false;
-			play_btn.visible = true;
-			pause_btn.visible = false;
+//			play_button.visible = true;
+			play_button.filters = [glowB];
+			pause_button.filters = [glowR];
+//			pause_button.visible = false;
 			sc.stop();
 			timmy.stop();
 			sc.removeEventListener(Event.SOUND_COMPLETE, songDone);
@@ -262,17 +282,17 @@ public function playerDoc() {
 			var st:SoundTransform = new SoundTransform(vol, 0);
 			sc.soundTransform = st;
 			//set the mask to match the new volume
-			volume_mc.mask_mc.scaleX = vol;
+			volumeControl_mc.volumeControlMask.scaleX = vol;
 		}// end function setNewVolume
 
 		public function startVolumeTracking(ev:MouseEvent):void{
 			trace('in function startVolumeTracking: ');
-			volume_mc.addEventListener(MouseEvent.MOUSE_MOVE, setNewVolume);
+			volumeControl_mc.addEventListener(MouseEvent.MOUSE_MOVE, setNewVolume);
 		}// end function startVolumeTracking
 		
 		public function stopVolumeTracking(ev:MouseEvent):void{
 			trace('in function stopVolumeTracking: ');
-			volume_mc.removeEventListener(MouseEvent.MOUSE_MOVE, setNewVolume);
+			volumeControl_mc.removeEventListener(MouseEvent.MOUSE_MOVE, setNewVolume);
 		}// end function stopVolumeTracking
 		
 		public function getData(ev):void{
@@ -293,7 +313,7 @@ public function playerDoc() {
 
 			
 			
-		play_btn.dispatchEvent( new MouseEvent("click") );		
+		play_button.dispatchEvent( new MouseEvent("click") );		
 
 		}// end function getData
 		
@@ -313,14 +333,22 @@ public function playerDoc() {
 			c.y = 420;
 			this.addChild(c);
 			
-			var ypos:Number = 405;
+			var ltf:TextFormat = new TextFormat(); // format for the list item
+			var ypos:Number = -15;
 			var d:listEntry;
 			for (var i:Number = 0; i <= numSong - 1; i++) {
 				d = new listEntry;
-				d.listItem_txt.text = listXML.song[i].title;
-			trace('d.listItem_txt.text: ', d.listItem_txt.text);
+				d.listItemNum_txt.text = String(i + 1);
+				d.listItemTitle_txt.text = listXML.song[i].title;
+				d.listItemLength_txt.text =listXML.song[i].length;
 				d.x = 0;
 				d.y = ypos + 15;
+				ypos = d.y;
+				d.height = 15;
+				ltf.size = 15;
+				d.listItemNum_txt.setTextFormat(ltf);
+				d.listItemTitle_txt.setTextFormat(ltf);
+				d.listItemLength_txt.setTextFormat(ltf);
 			c.addChild(d);
 			trace('c: ', c);
 			} // end for loop
