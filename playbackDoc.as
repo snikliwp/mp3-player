@@ -31,7 +31,7 @@
 			// constructor code
 			this.addChild(visualization);
 			
-			var req:URLRequest = new URLRequest("./songs/The-Offspring - Kristy-Are-You-Doing-Okay.mp3");
+			var req:URLRequest = new URLRequest("./music/the-bitch-song.mp3");
 			st = new SoundTransform(1, 0);
 			var context:SoundLoaderContext = new SoundLoaderContext(4000, false);
 			s.load(req, context);
@@ -54,7 +54,6 @@
 				visualization.graphics.lineTo(startX+L, bytes.readFloat() * 100 + leftBase);
 			}
 			
-			visualization.graphics.lineStyle(0.5, 0xFF0000, 1);
 			visualization.graphics.lineStyle(0.5, 0xFF0000, 1);
 			visualization.graphics.beginFill(0xFF0000, 0.32);
 			visualization.graphics.moveTo(startX, rightBase + 100);

@@ -8,6 +8,7 @@
 	import flash.media.SoundChannel;
 	import flash.media.SoundLoaderContext;
 	import flash.media.SoundTransform;
+	import flash.media.SoundMixer;
 
 	import flash.events.MouseEvent;
 	import flash.events.ProgressEvent;
@@ -17,17 +18,21 @@
 	import flash.events.HTTPStatusEvent;
 	
 	import flash.utils.Timer;
+	import flash.utils.ByteArray;
 	
 	import flash.display.LoaderInfo;
 	import flash.display.Graphics;
+	import flash.display.Sprite;
 	
 	import flash.net.URLRequest;		// Go get the xml file
 	import flash.net.URLLoader;			// Load the xml file
 	
 	import flash.text.TextField;
 	import flash.text.TextFormat;
+	
 	import flash.geom.Rectangle;
 
+	
 
 
 
@@ -35,7 +40,7 @@
 	
 	public class playerDoc extends MovieClip {
 		
-		private var songList:Array = ["the-bitch-song.mp3", "1985.mp3", "high-school-never-ends.mp3"];	//eventually this will be retrieved from an XML file
+//		private var songList:Array = [];	//eventually this will be retrieved from an XML file
 		private var songListXML:Array = new Array;	// this will be retrieved from an XML file
 		private var path:String = './music/';
 		private var currentTrack:Number = 0;
@@ -56,6 +61,11 @@
 		private var listXML:XML;									// array to store the xml data
 		private	var req:URLRequest = new URLRequest();				// Set up to get the xml data 
 		private	var xmlLoader:URLLoader = new URLLoader();			// Set up to get the images
+		public var bytes:ByteArray = new ByteArray();
+		public var leftBase:Number = 9;
+		public var rightBase:Number = 21;
+		public var startX:Number = 114;
+		public var visualization:Sprite = new Sprite();
 
 		public static const CLICK:String = "click";
 
@@ -103,6 +113,7 @@ public function playerDoc() {
 			play_button.filters = [glowB];
 			playlist_button.filters = [glowB];
 			
+			this.addEventListener(Event.ENTER_FRAME, createVisualization);
 			
 		}// end function playerDoc
 		
@@ -138,6 +149,8 @@ public function playerDoc() {
 //				play_button.visible = false;
 				pause_button.filters = [glowB];
 //				pause_button.visible = true;
+				nowPlaying_txt.text = listXML.song[currentTrack].title;
+				playLength_txt.text = listXML.song[currentTrack].length;
 				var req:URLRequest = new URLRequest(path + songListXML[currentTrack]);
 				var trans:SoundTransform = new SoundTransform(vol, 0);
 				s = new Sound(req, context);
@@ -183,8 +196,8 @@ public function playerDoc() {
 				seek_mc.play_fill_mc.scaleX = pct;
 				seek_mc.handle_mc.x = seek_mc.bg_mc.width * pct;
 				
-				seek_mc.handle_mc.scaleX = pct * 1.2 + .8;		//this is how the Rocket Grew along the seek bar
-				seek_mc.handle_mc.scaleY = pct * 1.2 + .8;
+//				seek_mc.handle_mc.scaleX = pct * 1.2 + .8;		//this is how the Rocket Grew along the seek bar
+//				seek_mc.handle_mc.scaleY = pct * 1.2 + .8;
 				
 				//update the time
 				//s.length is the length of the song in milliseconds -> we need to convert this to minutes and seconds
@@ -217,7 +230,7 @@ public function playerDoc() {
 				musician_mc.head_mc.rotation = lp * 60 - 30;
 				var rp:Number = sc.rightPeak / vol;
 				musician_mc.garrett_mc.y = musician_mc.head_mc.y - (rp * 20);
-				musician_mc.x = pct * stage.stageWidth;
+				musician_mc.x = pct * seek_mc.bg_mc.width;
 				
 			}
 		}// end function updateInterface
@@ -397,18 +410,28 @@ public function playerDoc() {
 			clearList(ev);
 		} // end function changeSong
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+		public function createVisualization(ev:Event):void{
+			trace('in function createVisualization: ');
+			//24 times per second get the computeSpectrum and build a visualization
+			SoundMixer.computeSpectrum(bytes);
+			
+			visualization.graphics.clear();
+			visualization.graphics.lineStyle(2, 0x00FF00, 1);
+			visualization.graphics.moveTo(startX, leftBase);
+			
+			for(var L:Number=0; L<256; L++){
+				//left channel
+				visualization.graphics.lineTo(startX+L, bytes.readFloat() * 10 + leftBase);
+			} // end for 
+			
+			visualization.graphics.lineStyle(2, 0xFF0000, 1);
+			visualization.graphics.moveTo(startX, rightBase);
+			
+			for(var R:Number=256; R<512; R++){
+				//right channel
+				visualization.graphics.lineTo(startX+R-255, bytes.readFloat() * 10 + rightBase);
+			} // end for 
+		} // end function createVisualization
 		
 		
 		
