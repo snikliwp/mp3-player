@@ -40,32 +40,32 @@
 	
 	public class playerDoc extends MovieClip {
 		
-//		private var songList:Array = [];	//eventually this will be retrieved from an XML file
-		private var songListXML:Array = new Array;	// this will be retrieved from an XML file
-		private var path:String = './music/';
-		private var currentTrack:Number = 0;
-		private var position:Number = 0;
-		private var numSong:Number = 0;
-		private var isPlaying:Boolean = false;
-		private var s:Sound;
-		private var sc:SoundChannel;
-		private var context:SoundLoaderContext = new SoundLoaderContext(4000);
-		private var timmy:Timer = new Timer(100, 0);
-		private var vol:Number = 0.4;
-		private var titleFormat:TextFormat = new TextFormat();
-		private var glowR:GlowFilter = new GlowFilter;
-		private var glowB:GlowFilter = new GlowFilter;
-		private var playList_mc:MovieClip;								// new playlist
-		private var listEntry_mc:MovieClip;								// new playlist
-		private var playListXML:String = "playlist.xml";			// name of the xml file
-		private var listXML:XML;									// array to store the xml data
-		private	var req:URLRequest = new URLRequest();				// Set up to get the xml data 
-		private	var xmlLoader:URLLoader = new URLLoader();			// Set up to get the images
+		public var songListXML:Array = new Array;	// this will be retrieved from an XML file
+		public var path:String = './music/';
+		public var currentTrack:Number = 0;
+		public var position:Number = 0;
+		public var numSong:Number = 0;
+		public var isPlaying:Boolean = false;
+		public var s:Sound = new Sound;
+		public var sc:SoundChannel;
+		public var context:SoundLoaderContext = new SoundLoaderContext(4000);
+		public var timmy:Timer = new Timer(100, 0);
+		public var vol:Number = 0.4;
+		public var titleFormat:TextFormat = new TextFormat();
+		public var glowR:GlowFilter = new GlowFilter;
+		public var glowB:GlowFilter = new GlowFilter;
+		public var playList_mc:MovieClip;								// new playlist
+		public var listEntry_mc:MovieClip;								// new playlist
+		public var playListXML:String = "playlist.xml";			// name of the xml file
+		public var listXML:XML;									// array to store the xml data
+		public var req:URLRequest = new URLRequest();				// Set up to get the xml data 
+		public var xmlLoader:URLLoader = new URLLoader();			// Set up to get the images
 		public var bytes:ByteArray = new ByteArray();
 		public var leftBase:Number = 9;
 		public var rightBase:Number = 21;
 		public var startX:Number = 114;
 		public var visualization:Sprite = new Sprite();
+		public var st:SoundTransform;
 
 		public static const CLICK:String = "click";
 
@@ -73,7 +73,7 @@
 
 
 public function playerDoc() {
-			trace('in function playerDoc: ');
+//			trace('in function playerDoc: ');
 			// constructor code
 			req = new URLRequest(playListXML);	
 			xmlLoader = new URLLoader();										// Set up to get the images
@@ -88,7 +88,6 @@ public function playerDoc() {
 			stop_button.addEventListener(MouseEvent.CLICK, stopClick); 
 			next_button.addEventListener(MouseEvent.CLICK, nextClick); 
 			previous_button.addEventListener(MouseEvent.CLICK, prevClick); 
-//			previous_button.addEventListener(MouseEvent.CLICK, prevClick); 
 
 			volumeControl_mc.addEventListener(MouseEvent.CLICK, setNewVolume);
 			volumeControl_mc.addEventListener(MouseEvent.MOUSE_DOWN, startVolumeTracking);
@@ -102,10 +101,8 @@ public function playerDoc() {
 
 			seek_mc.hit_mc.addEventListener(MouseEvent.CLICK, jumpTo);
 			
-//			glow.inner = false;
 			glowB.color = 0x0000ff;
 			glowR.color = 0xff0000;
-//			glow.strength = 128;
 			stop_button.filters = [glowB];
 			previous_button.filters = [glowB];
 			next_button.filters = [glowB];
@@ -113,6 +110,7 @@ public function playerDoc() {
 			play_button.filters = [glowB];
 			playlist_button.filters = [glowB];
 			
+			this.addChild(visualization);
 			this.addEventListener(Event.ENTER_FRAME, createVisualization);
 			
 		}// end function playerDoc
@@ -121,7 +119,6 @@ public function playerDoc() {
 		public function jumpTo(ev:MouseEvent):void{
 			trace('in function jumpTo: ');
 			//move to a new point on the song's timeline and start playing from there
-			//if( isPlaying ){
 				//pause the song
 				pause_button.dispatchEvent( new MouseEvent("click") );		//this will have set the position variable that we need to overwrite
 				
@@ -131,24 +128,16 @@ public function playerDoc() {
 				
 				//play from the new position
 				play_button.dispatchEvent( new MouseEvent("click") );		
-			/*}else{
-				var pct:Number = ev.localX / ev.currentTarget.width;
-				//we will switch this to use the XML value instead of the s.length
-				position = pct * s.length;
-				//now move the handle to the new position
-				
-			}*/
+			}
 		}// end function jumpTo
 		
 		public function playClick(ev:MouseEvent):void{
-			trace('in function playClick: ');
+//			trace('in function playClick: ');
 			//play the song
 			if(!isPlaying){
 				isPlaying = true;
 				play_button.filters = [glowR];
-//				play_button.visible = false;
 				pause_button.filters = [glowB];
-//				pause_button.visible = true;
 				nowPlaying_txt.text = listXML.song[currentTrack].title;
 				playLength_txt.text = listXML.song[currentTrack].length;
 				var req:URLRequest = new URLRequest(path + songListXML[currentTrack]);
@@ -164,20 +153,18 @@ public function playerDoc() {
 		}// end function playClick
 		
 		public function songDone(ev:Event):void{
-			trace('in function songDone: ');
+//			trace('in function songDone: ');
 			//move to the next song
 			next_button.dispatchEvent( new MouseEvent("click") );		
-			// stopSongCommon();
 		}// end function songDone
 		
 		public function songLoading(ev:ProgressEvent):void{
-			trace('in function songLoading: ');
+//			trace('in function songLoading: ');
 			//get the percentage and move the scaleX of the seek_mc.load_fill_mc a percentage of seek_mc.bg_mc.width
 			var pct:Number = ev.bytesLoaded / ev.bytesTotal;
 			if( pct < .98){
 				//update the load fill bar
 				seek_mc.load_fill_mc.scaleX = pct;
-				//trace( pct );
 			}else{
 				//if the pct is 99 or greater then remove the listener and set the scaleX to 100%
 				s.removeEventListener(ProgressEvent.PROGRESS, songLoading);
@@ -195,9 +182,6 @@ public function playerDoc() {
 				//move the x position of the handle_mc
 				seek_mc.play_fill_mc.scaleX = pct;
 				seek_mc.handle_mc.x = seek_mc.bg_mc.width * pct;
-				
-//				seek_mc.handle_mc.scaleX = pct * 1.2 + .8;		//this is how the Rocket Grew along the seek bar
-//				seek_mc.handle_mc.scaleY = pct * 1.2 + .8;
 				
 				//update the time
 				//s.length is the length of the song in milliseconds -> we need to convert this to minutes and seconds
@@ -224,59 +208,53 @@ public function playerDoc() {
 				}
 				countdown_txt.text = strMinutes + ":" + strSeconds;
 				
-				
 				//update any animations that you have
-				var lp:Number = sc.leftPeak / vol;
-				musician_mc.head_mc.rotation = lp * 60 - 30;
-				var rp:Number = sc.rightPeak / vol;
-				musician_mc.garrett_mc.y = musician_mc.head_mc.y - (rp * 20);
-				musician_mc.x = pct * seek_mc.bg_mc.width;
 				
 			}
 		}// end function updateInterface
 		
 		public function pauseClick(ev:MouseEvent):void{
-			trace('in function pauseClick: ');
+//			trace('in function pauseClick: ');
 			if(isPlaying){
 				position = sc.position;
 				stopSongCommon();
-			}
+			} // end if
 		}// end function pauseClick
 		
 		public function prevClick(ev:MouseEvent):void{
-			trace('in function prevClick: ');
+//			trace('in function prevClick: ');
 			stop_button.dispatchEvent(new MouseEvent("click"));
 			currentTrack--;
 			if(currentTrack < 0){
 				currentTrack = songListXML.length - 1;
-			}
+			} // end if
 			play_button.dispatchEvent(new MouseEvent("click"));
 		}// end function prevClick
 		
 		public function nextClick(ev:MouseEvent):void{
-			trace('in function nextClick: ');
+//			trace('in function nextClick: ');
 			stop_button.dispatchEvent(new MouseEvent("click"));
 			currentTrack++;
 			if(currentTrack >= songListXML.length){
 				currentTrack = 0;
-			}
+			} // end if
 			play_button.dispatchEvent(new MouseEvent("click"));
 
 		}// end function nextClick
 		
 		public function stopClick(ev:MouseEvent):void{
-			trace('in function stopClick: ');
+//			trace('in function stopClick: ');
 			if(isPlaying){
 				position = 0;
 				stopSongCommon();
 				//send the play fill bar and handle back to start
 				seek_mc.play_fill_mc.scaleX = 0;
 				seek_mc.handle_mc.x = 0;
-			}
+			} // end if
 		}// end function stopClick
 		
 		public function stopSongCommon():void{
-			trace('in function stopSongCommon: ');
+//			trace('in function stopSongCommon: ');
 			isPlaying = false;
 //			play_button.visible = true;
 			play_button.filters = [glowB];
@@ -288,7 +266,7 @@ public function playerDoc() {
 		}// end function stopSongCommon
 		
 		public function setNewVolume(ev:MouseEvent):void{
-			trace('in function setNewVolume: ');
+//			trace('in function setNewVolume: ');
 			//calculate the new volume percentage
 			//create a new SoundTransform
 			//pass it to the SoundChannel
@@ -301,68 +279,56 @@ public function playerDoc() {
 		}// end function setNewVolume
 
 		public function startVolumeTracking(ev:MouseEvent):void{
-			trace('in function startVolumeTracking: ');
+//			trace('in function startVolumeTracking: ');
 			volumeControl_mc.addEventListener(MouseEvent.MOUSE_MOVE, setNewVolume);
 		}// end function startVolumeTracking
 		
 		public function stopVolumeTracking(ev:MouseEvent):void{
-			trace('in function stopVolumeTracking: ');
+//			trace('in function stopVolumeTracking: ');
 			volumeControl_mc.removeEventListener(MouseEvent.MOUSE_MOVE, setNewVolume);
 		}// end function stopVolumeTracking
 		
 		public function clearList(ev:MouseEvent):void{
-			trace('in function clearList: ');
-			trace('ev.target: ', ev.target);
-			trace('ev.target.parent: ', ev.target.parent);
+//			trace('in function clearList: ');
 			ev.target.removeEventListener(MouseEvent.ROLL_OUT, clearList);
 			ev.target.parent.removeChild(ev.target);
-			
-//			volumeControl_mc.removeEventListener(MouseEvent.MOUSE_MOVE, setNewVolume);
-		}// end function clearList
+		} // end function clearList
 		
 		public function getData(ev):void{
-			trace('in function getData: ');
+//			trace('in function getData: ');
 			listXML = XML(ev.target.data);			// load the array with the data from the XML file
 			numSong = listXML.song.length();		// number of level1 tags in the XML file
-			trace('listXML: ', listXML);
-			trace('numSong: ', numSong);
 			
 			for (var i:Number = 0; i <= numSong - 1; i++) {
-				trace('listXML.song: ', listXML.song[i].file);
-				
-//				trace('listXML.song.file.text: ', listXML.song[i].file.text);
-//				trace('listXML.song.file.text: ', listXML.song[i].file.text);
 				songListXML[i] = listXML.song[i].file;
-			}
-			trace('songListXML: ', songListXML);
-
-			
+			} // end for
 			
 		play_button.dispatchEvent( new MouseEvent("click") );		
 
 		}// end function getData
 		
 		public function xmlError(ev):void{
-			trace('in function xmlError: ');
+//			trace('in function xmlError: ');
 		}// end function xmlError
 		
 		public function error404(ev):void{
-			trace('in function error404: ');
+//			trace('in function error404: ');
 		}// end function error404
 		
 		public function playList(ev:MouseEvent): void {
-			trace('in function playlist: ');
+//			trace('in function playlist: ');
 			// make the playlist visible expanding from the top
 			var c:playListHolder = new playListHolder();
 			c.x = 0;
 			c.y = 75;
-			
 			this.addChild(c);
+			
 			c.addEventListener(MouseEvent.CLICK, changeSong);
 			c.addEventListener(MouseEvent.ROLL_OUT, clearList);
 			var ltf:TextFormat = new TextFormat(); // format for the list item
 			var ypos:Number = -10;
 			var d:listEntry;
+			
 			for (var i:Number = 0; i <= numSong - 1; i++) {
 				d = new listEntry();
 				d.listItemNum_txt.text = String(i + 1);
@@ -371,11 +337,13 @@ public function playerDoc() {
 				d.x = 5;
 				d.y = ypos + 15;
 				ypos = d.y;
+				
 				if (i == currentTrack) {
 					ltf.color = 0x00ff00;
 				} else { //end if
 					ltf.color = 0x0000ff;
 				} //end else
+				
 				d.height = 15;
 				d.width = 295;
 				ltf.size = 15;
@@ -390,6 +358,7 @@ public function playerDoc() {
 				c.addChild(d);
 				c.height = 15 * int(numSong);
 			} // end for loop
+			
 				// draw a nice border around the list holder
 				c.graphics.clear();
 				var r:Rectangle = c.getBounds(c);
@@ -403,7 +372,7 @@ public function playerDoc() {
 		}// end function playlist
 		
 		public function changeSong(ev:MouseEvent): void {
-			trace('In function changeSong: ', ev.target);
+//			trace('In function changeSong: ', ev.target);
 			ev.target.removeEventListener(MouseEvent.CLICK, changeSong);
 			currentTrack = ev.target.currentTrack -1;
 			next_button.dispatchEvent(new MouseEvent("click"));
@@ -411,25 +380,32 @@ public function playerDoc() {
 		} // end function changeSong
 		
 		public function createVisualization(ev:Event):void{
-			trace('in function createVisualization: ');
+//			trace('in function createVisualization: ');
 			//24 times per second get the computeSpectrum and build a visualization
 			SoundMixer.computeSpectrum(bytes);
 			
 			visualization.graphics.clear();
-			visualization.graphics.lineStyle(2, 0x00FF00, 1);
+			visualization.graphics.lineStyle(1, 0x00FF00, 1);
 			visualization.graphics.moveTo(startX, leftBase);
-			
-			for(var L:Number=0; L<256; L++){
+			var lChan:Number = new Number;
+			var rChan:Number = new Number;
+			for(var L:Number=0; L<120; L++){
 				//left channel
-				visualization.graphics.lineTo(startX+L, bytes.readFloat() * 10 + leftBase);
+				lChan = (bytes.readFloat() * 40 + leftBase);
+				if (lChan < 4){lChan = 4;};
+				if (lChan > 13){lChan = 13;};
+				visualization.graphics.lineTo(startX+L, lChan);
 			} // end for 
 			
-			visualization.graphics.lineStyle(2, 0xFF0000, 1);
+			visualization.graphics.lineStyle(1, 0xFF0000, 1);
 			visualization.graphics.moveTo(startX, rightBase);
 			
-			for(var R:Number=256; R<512; R++){
+			for(var R:Number=256; R<376; R++){
 				//right channel
-				visualization.graphics.lineTo(startX+R-255, bytes.readFloat() * 10 + rightBase);
+				rChan = (bytes.readFloat() * 40 + rightBase);
+				if (rChan < 16){rChan = 16;};
+				if (rChan > 25){rChan = 25;};
+				visualization.graphics.lineTo(startX+R-255, rChan);
 			} // end for 
 		} // end function createVisualization
 		

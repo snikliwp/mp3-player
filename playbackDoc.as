@@ -46,26 +46,27 @@
 			SoundMixer.computeSpectrum(bytes);
 			
 			visualization.graphics.clear();
-			visualization.graphics.lineStyle(0.5, 0x00FF00, 1);
+			visualization.graphics.lineStyle(2, 0x00FF00, 1);
 			visualization.graphics.moveTo(startX, leftBase);
 			
-			for(var L:Number=0; L<256; L++){
+			for(var L:Number=0; L<120; L++){
 				//left channel
-				visualization.graphics.lineTo(startX+L, bytes.readFloat() * 100 + leftBase);
+				visualization.graphics.lineTo(startX+L, bytes.readFloat() * 10 + leftBase);
 			}
 			
-			visualization.graphics.lineStyle(0.5, 0xFF0000, 1);
-			visualization.graphics.beginFill(0xFF0000, 0.32);
-			visualization.graphics.moveTo(startX, rightBase + 100);
-			visualization.graphics.lineTo(startX, rightBase);
+			visualization.graphics.lineStyle(2, 0xFF0000, 1);
+//			visualization.graphics.beginFill(0xFF0000, 0.32);
+//			visualization.graphics.moveTo(startX, rightBase + 100);
+			visualization.graphics.moveTo(startX, rightBase);
+//			visualization.graphics.lineTo(startX, rightBase);
 			
-			for(var R:Number=256; R<512; R++){
+			for(var R:Number=256; R<376; R++){
 				//right channel
-				visualization.graphics.lineTo(startX+R-255, bytes.readFloat() * 100 + rightBase);
+				visualization.graphics.lineTo(startX+R-255, bytes.readFloat() * 10 + rightBase);
 			}
-				visualization.graphics.lineTo(startX+255, rightBase + 100);
-				visualization.graphics.lineTo(startX, rightBase + 100);
-				visualization.graphics.endFill();
+//				visualization.graphics.lineTo(startX+255, rightBase + 100);
+//				visualization.graphics.lineTo(startX, rightBase + 100);
+//				visualization.graphics.endFill();
 		}
 		
 		public function stopClick(ev:MouseEvent):void{
