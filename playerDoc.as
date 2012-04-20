@@ -128,7 +128,6 @@ public function playerDoc() {
 				
 				//play from the new position
 				play_button.dispatchEvent( new MouseEvent("click") );		
-			}
 		}// end function jumpTo
 		
 		public function playClick(ev:MouseEvent):void{
@@ -149,7 +148,7 @@ public function playerDoc() {
 				sc.addEventListener(Event.SOUND_COMPLETE, songDone);
 				
 				timmy.start();
-			}
+			} // end if
 		}// end function playClick
 		
 		public function songDone(ev:Event):void{
@@ -169,7 +168,7 @@ public function playerDoc() {
 				//if the pct is 99 or greater then remove the listener and set the scaleX to 100%
 				s.removeEventListener(ProgressEvent.PROGRESS, songLoading);
 				seek_mc.load_fill_mc.scaleX = 1;
-			}
+			} // end else
 		}// end function songLoading
 		
 		public function updateInterface(ev:TimerEvent):void{
@@ -194,7 +193,7 @@ public function playerDoc() {
 				var strSeconds:String = remainderSeconds.toString();
 				if( strSeconds.length == 1){
 					strSeconds = "0" + strSeconds;		//add the leading zero to the seconds
-				}
+				} // end if
 				time_mc.time_txt.text = strMinutes + ":" + strSeconds;
 				
 				//COUNTDOWN TIME
@@ -205,12 +204,12 @@ public function playerDoc() {
 				strSeconds = remainderSeconds.toString();
 				if( strSeconds.length == 1){
 					strSeconds = "0" + strSeconds;		//add the leading zero to the seconds
-				}
+				} // end if
 				countdown_txt.text = strMinutes + ":" + strSeconds;
 				
 				//update any animations that you have
 				
-			}
+			} // end if
 		}// end function updateInterface
 		
 		public function pauseClick(ev:MouseEvent):void{
@@ -225,9 +224,7 @@ public function playerDoc() {
 //			trace('in function prevClick: ');
 			stop_button.dispatchEvent(new MouseEvent("click"));
 			currentTrack--;
-			if(currentTrack < 0){
-				currentTrack = songListXML.length - 1;
-			} // end if
+			if(currentTrack < 0){currentTrack = songListXML.length - 1;} // end if
 			play_button.dispatchEvent(new MouseEvent("click"));
 		}// end function prevClick
 		
@@ -235,9 +232,9 @@ public function playerDoc() {
 //			trace('in function nextClick: ');
 			stop_button.dispatchEvent(new MouseEvent("click"));
 			currentTrack++;
-			if(currentTrack >= songListXML.length){
-				currentTrack = 0;
-			} // end if
+			
+			if(currentTrack >= songListXML.length){currentTrack = 0;} // end if
+			
 			play_button.dispatchEvent(new MouseEvent("click"));
 
 		}// end function nextClick
@@ -303,7 +300,7 @@ public function playerDoc() {
 				songListXML[i] = listXML.song[i].file;
 			} // end for
 			
-		play_button.dispatchEvent( new MouseEvent("click") );		
+			play_button.dispatchEvent( new MouseEvent("click") );		
 
 		}// end function getData
 		

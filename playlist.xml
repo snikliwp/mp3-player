@@ -1,52 +1,80 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <playlist>
 	<song>
-		<artist>Bowling For Soup</artist>
-		<title>The Bitch Song</title>
-		<file>the-bitch-song.mp3</file>
-		<album>Let's Do It for Johnny!</album>
-		<length>03:23</length>
+		<artist>Eric Heatherly</artist>
+		<title>Someone Else's Cadillac</title>
+		<file>Someone Else's Cadillac.mp3</file>
+		<album>Swimming in Champagne</album>
+		<length>04:12</length>
 	</song>
 	<song>
-		<artist>Bowling For Soup</artist>
-		<title>S-S-S-Saturday</title>
-		<file>s-s-s-saturday.mp3</file>
-		<album>Fishin' for Woos</album>
-		<length>03:05</length>
+		<artist>Eric Heatherly</artist>
+		<title>I Just Break'em</title>
+		<file>I Just Break'em.mp3</file>
+		<album>Swimming in Champagne</album>
+		<length>03:59</length>
 	</song>
 	<song>
-		<artist>Bowling For Soup</artist>
-		<title>Turbulence</title>
-		<file>turbulence.mp3</file>
-		<album>Fishin' for Woos</album>
-		<length>03:58</length>
+		<artist>Eric Heatherly</artist>
+		<title>Didn't Mean a Thing</title>
+		<file>Didn't Mean a Thing.mp3</file>
+		<album>Swimming in Champagne</album>
+		<length>05:01</length>
 	</song>
 	<song>
-		<artist>Bowling For Soup</artist>
-		<title>High School Never Ends</title>
-		<file>high-school-never-ends.mp3</file>
-		<album>The Great Burrito Extortion Case</album>
+		<artist>Eric Heatherly</artist>
+		<title>One Night</title>
+		<file>One Night.mp3</file>
+		<album>Swimming in Champagne</album>
+		<length>04:06</length>
+	</song>
+	<song>
+		<artist>Eric Heatherly</artist>
+		<title>Why Don'tCha</title>
+		<file>Why Don'tCha.mp3</file>
+		<album>Swimming in Champagne</album>
+		<length>04:03</length>
+	</song>
+	<song>
+		<artist>Eric Heatherly</artist>
+		<title>Flowers on the Wall</title>
+		<file>Flowers on the Wall.mp3</file>
+		<album>Swimming in Champagne</album>
 		<length>03:29</length>
 	</song>
 	<song>
-		<artist>Bowling For Soup</artist>
-		<title>1985</title>
-		<file>1985.mp3</file>
-		<album>A Hangover You Don't Deserve</album>
-		<length>03:13</length>
+		<artist>Eric Heatherly</artist>
+		<title>Let Me</title>
+		<file>Let Me.mp3</file>
+		<album>Swimming in Champagne</album>
+		<length>03:57</length>
 	</song>
 	<song>
-		<artist>Bowling For Soup</artist>
-		<title>Friends Chicks Guitars</title>
-		<file>friends-chicks-guitars.mp3</file>
-		<album>Fishin' for Woos</album>
-		<length>03:42</length>
+		<artist>Eric Heatherly</artist>
+		<title>Swinging in Champagne</title>
+		<file>Swinging in Champagne.mp3</file>
+		<album>Swimming in Champagne</album>
+		<length>04:26</length>
 	</song>
 	<song>
-		<artist>Bowling For Soup</artist>
-		<title>Girl All the Bad Guys Want</title>
-		<file>girl-all-the-bad-guys-want.mp3</file>
-		<album>A Hangover You Don't Deserve</album>
-		<length>03:17</length>
+		<artist>Eric Heatherly</artist>
+		<title>Wrong Five O'Clock</title>
+		<file>Wrong Five O'Clock.mp3</file>
+		<album>Swimming in Champagne</album>
+		<length>02:37</length>
+	</song>
+	<song>
+		<artist>Eric Heatherly</artist>
+		<title>Freedom Chain</title>
+		<file>Freedom Chain.mp3</file>
+		<album>Swimming in Champagne</album>
+		<length>03:58</length>
+	</song>
+	<song>
+		<artist>Eric Heatherly</artist>
+		<title>She's So Hot</title>
+		<file>She's So Hot.mp3</file>
+		<album>Swimming in Champagne</album>
+		<length>03:45</length>
 	</song>
 </playlist>
